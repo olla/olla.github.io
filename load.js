@@ -22,7 +22,7 @@ options = {
 
     // Required. Called when a user selects an item in the Chooser.
     success: function(files) {
-     updatePage(files, 1);
+      updatePageByLink(files[0].link, 1);
     },
 
     // Optional. Called when the user closes the dialog without selecting a file
@@ -97,10 +97,6 @@ function loadEditionPage(pg) {
       updatePageByLink(localEditionLink, pg);
       sessionStorage.setItem('pg', pg);
      }
-}
-
-function updatePage(files, pg) {
-     updatePageByLink(files[0].link, pg);
 }
 
 function updatePageByLink(XMLlink, pg) {
@@ -243,5 +239,6 @@ function applyTransform(div_id, xmlDoc, xslDoc, pg) {
 		 document.getElementById(div_id).innerHTML = "";
 		 document.getElementById(div_id).appendChild(fragment); MathJax.typeset(); }
 		 document.getElementById('toggle').value = sessionStorage.getItem('pg');
+		 console.log(div_id, xmlDocParsed, xslDocParsed, pg);
 	}
 }
