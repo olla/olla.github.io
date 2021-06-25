@@ -104,14 +104,14 @@ document.addEventListener("DOMContentLoaded", theDomHasLoaded, false);
 window.addEventListener("load", pageFullyLoaded, false);
 
 function theDomHasLoaded(e) {
- var button = Dropbox.createChooseButton(options);
- document.getElementById("dropbox_loading").appendChild(button);
+ //var button = Dropbox.createChooseButton(options);
+ //document.getElementById("dropbox_loading").appendChild(button);
  toggable_input = document.getElementById('toggle');
  toggable_input.addEventListener("click",togglehandling,{passive:true});
 }
 
 function pageFullyLoaded(e) {
- init(pg, 1);
+ //init(pg, 1);
 }
 
 function togglehandling(pg, i) {
