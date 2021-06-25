@@ -25,8 +25,8 @@
   <xsl:element name="div">
    <xsl:choose>
     <xsl:when test="$crrntPag&gt;1">
-     <input type="button" onclick="init({$crrntPag - 1}, 1, 1)" value="⏪" id="inPrev"></input>
-    <input type="button" onclick="init({1}, 1, 1)" value="⏮" id="inFrst"></input>
+     <input type="button" onclick="loadEditionPage({$crrntPag - 1})" value="⏪" id="inPrev"></input>
+    <input type="button" onclick="loadEditionPage(1)" value="⏮" id="inFrst"></input>
     </xsl:when>
     <xsl:otherwise>
      <input value="⏪" type="button"><xsl:attribute name="disabled"></xsl:attribute></input>
@@ -38,8 +38,8 @@
   <xsl:element name="div">
    <xsl:choose>
     <xsl:when test="$crrntPag&lt;$pagNumbrs">
-     <input type="button" onclick="init({$pagNumbrs}, 1, 1)" value="⏭" id="inLast"></input>
-    <input type="button" onclick="init({$crrntPag + 1}, 1, 1)" value="⏩" id="inNext"></input>
+     <input type="button" onclick="loadEditionPage({$pagNumbrs})" value="⏭" id="inLast"></input>
+    <input type="button" onclick="loadEditionPage({$crrntPag + 1})" value="⏩" id="inNext"></input>
     </xsl:when>
     <xsl:otherwise>
      <input value="⏭" type="button"><xsl:attribute name="disabled"></xsl:attribute></input>
