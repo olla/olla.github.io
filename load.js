@@ -69,7 +69,8 @@ function theDomHasLoaded(e) {
 }
 
 function pageFullyLoaded(e) {
- init(pg, 1);
+ var bookmark = sessionStorage.getItem('pg');
+ if (bookmark>1) {loadEditionPage(bookmark);} else {init(pg, 1);}
 }
 
 function togglehandling(pg, i) {
@@ -87,14 +88,14 @@ function init(pg, i) {
 		pg = 1;
  //var obj = json[i];
  //sendRequest(obj.xmlURI, obj.xslURI, obj.div_id, pg, i);
- updatePageInit(pg);
- sessionStorage.setItem('pg', pg);
+ loadEditionPage(pg);
 }
 
-function updatePageInit(pg) {
+function loadEditionPage(pg) {
      var localEditionLink = localStorage.getItem('edizione');
      if (localEditionLink) {
       updatePageByLink(localEditionLink, pg);
+      sessionStorage.setItem('pg', pg);
      }
 }
 
