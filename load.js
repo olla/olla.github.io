@@ -100,7 +100,7 @@ function loadEditionPage(pg) {
 }
 
 function updatePage(files, pg) {
-     updatePageByLink(files[0].link, pg)
+     updatePageByLink(files[0].link, pg);
 }
 
 function updatePageByLink(XMLlink, pg) {
@@ -242,6 +242,6 @@ function applyTransform(div_id, xmlDoc, xslDoc, pg) {
 		 if (fragment == null) {return;} else {
 		 document.getElementById(div_id).innerHTML = "";
 		 document.getElementById(div_id).appendChild(fragment); MathJax.typeset(); }
+		 document.getElementById('toggle').value = sessionStorage.getItem('pg');
 	}
-	document.getElementById('toggle').value = sessionStorage.getItem('pg')
 }
