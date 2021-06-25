@@ -22,49 +22,7 @@ options = {
 
     // Required. Called when a user selects an item in the Chooser.
     success: function(files) {
-	    xmlhttp = new XMLHttpRequest();
-	    if (xmlhttp) {
-		    xmlhttp.open("get", files[0].link, true);
-		    xmlhttp.send();
-		    xmlhttp.onreadystatechange = function() {
-			    if (xmlhttp.readyState === XMLHttpRequest.DONE && xmlhttp.status == 200) {
-				    xmlRspn = xmlhttp.responseXML;
-				    xslhttp = new XMLHttpRequest();
-	       if (xslhttp) {
-		       xslhttp.open("get", "testocritico.xsl", true);
-		       xslhttp.send();
-		       xslhttp.onreadystatechange = function() {
-			       if (xslhttp.readyState === XMLHttpRequest.DONE && xslhttp.status == 200) {
-				       xslRspn = xslhttp.responseXML;
-				       applyTransform("testocritico", xmlRspn, xslRspn, 1);
-			        xslhttp = new XMLHttpRequest();
-	          if (xslhttp) {
-		          xslhttp.open("get", "apparato.xsl", true);
-		          xslhttp.send();
-		          xslhttp.onreadystatechange = function() {
-			          if (xslhttp.readyState === XMLHttpRequest.DONE && xslhttp.status == 200) {
-				          xslRspn = xslhttp.responseXML;
-				          applyTransform("apparato", xmlRspn, xslRspn, 1);
-			           xslhttp = new XMLHttpRequest();
-	             if (xslhttp) {
-		             xslhttp.open("get", "navigazione.xsl", true);
-		             xslhttp.send();
-		             xslhttp.onreadystatechange = function() {
-			             if (xslhttp.readyState === XMLHttpRequest.DONE && xslhttp.status == 200) {
-				             xslRspn = xslhttp.responseXML;
-				             applyTransform("navigazione", xmlRspn, xslRspn, 1);
-			             }
-		             };
-			           }
-			          }
-		          };
-			        }
-			       }
-		       };
-			     }
-		     };
-	     }
-	    }
+     updatePage(files, 1);
     },
 
     // Optional. Called when the user closes the dialog without selecting a file
@@ -104,14 +62,14 @@ document.addEventListener("DOMContentLoaded", theDomHasLoaded, false);
 window.addEventListener("load", pageFullyLoaded, false);
 
 function theDomHasLoaded(e) {
- //var button = Dropbox.createChooseButton(options);
- //document.getElementById("dropbox_loading").appendChild(button);
+ var button = Dropbox.createChooseButton(options);
+ document.getElementById("dropbox_loading").appendChild(button);
  toggable_input = document.getElementById('toggle');
  toggable_input.addEventListener("click",togglehandling,{passive:true});
 }
 
 function pageFullyLoaded(e) {
- //init(pg, 1);
+ init(pg, 1);
 }
 
 function togglehandling(pg, i) {
@@ -127,32 +85,111 @@ function init(pg, i) {
 	pass++;
 	if (pass == 1)
 		pg = 1;
- var obj = json[i];
- sendRequest(obj.xmlURI, obj.xslURI, obj.div_id, pg, i);
+ //var obj = json[i];
+ //sendRequest(obj.xmlURI, obj.xslURI, obj.div_id, pg, i);
+ updatePageInit(pg);
  sessionStorage.setItem('pg', pg);
 }
 
+function updatePageInit(pg) {
+     var localEditionLink = localStorage.getItem('edizione');
+     if (localEditionLink) {
+      updatePageByLink(localEditionLink, pg);
+     }
+}
+
+function updatePage(files, pg) {
+     updatePageByLink(files[0].link, pg)
+}
+
+function updatePageByLink(XMLlink, pg) {
+	    xmlhttp = new XMLHttpRequest();
+	    if (xmlhttp) {
+		    xmlhttp.open("get", XMLlink, true);
+		    xmlhttp.send();
+		    xmlhttp.onreadystatechange = function() {
+			    if (xmlhttp.readyState === 4 && xmlhttp.status == 200) {
+				    xmlRspn = xmlhttp.response;
+	       localStorage.setItem('edizione', XMLlink);
+				    xslhttp = new XMLHttpRequest();
+	       if (xslhttp) {
+		       xslhttp.open("get", "testocritico.xsl", true);
+		       xslhttp.send();
+		       xslhttp.onreadystatechange = function() {
+			       if (xslhttp.readyState === 4 && xslhttp.status == 200) {
+				       xslRspn = xslhttp.response;
+	          //sessionStorage.setItem('testocritico',xmlRspn);
+				       applyTransform("testocritico", xmlRspn, xslRspn, pg);
+			        xslhttp = new XMLHttpRequest();
+	          if (xslhttp) {
+		          xslhttp.open("get", "apparato.xsl", true);
+		          xslhttp.send();
+		          xslhttp.onreadystatechange = function() {
+			          if (xslhttp.readyState === 4 && xslhttp.status == 200) {
+				          xslRspn = xslhttp.response;
+	             //sessionStorage.setItem('apparato',xmlRspn);
+				          applyTransform("apparato", xmlRspn, xslRspn, pg);
+			           xslhttp = new XMLHttpRequest();
+	             if (xslhttp) {
+		             xslhttp.open("get", "navigazione.xsl", true);
+		             xslhttp.send();
+		             xslhttp.onreadystatechange = function() {
+			             if (xslhttp.readyState === 4 && xslhttp.status == 200) {
+				             xslRspn = xslhttp.response;
+	                //sessionStorage.setItem('navigazione',xmlRspn);
+				             applyTransform("navigazione", xmlRspn, xslRspn, pg);
+			             }
+		             };
+			           }
+			          }
+		          };
+			        }
+			       }
+		       };
+			     }
+		     };
+	     }
+	    }
+}
+
 function sendRequest(xmlURL, xslURL, div_id, pg, i) {
-	xmlhttp = new XMLHttpRequest();
-	if (xmlhttp) {
-		xmlhttp.open("get", xmlURL, true);
-		xmlhttp.send();
-		xmlhttp.onreadystatechange = function() {
-			if (xmlhttp.readyState === XMLHttpRequest.DONE && xmlhttp.status == 200) {
-				xmlRspn = xmlhttp.responseXML;
-				xslhttp = new XMLHttpRequest();
-	   if (xslhttp) {
-		   xslhttp.open("get", xslURL, true);
-		   xslhttp.send();
-		   xslhttp.onreadystatechange = function() {
-			   if (xslhttp.readyState === XMLHttpRequest.DONE && xslhttp.status == 200) {
-				   xslRspn = xslhttp.responseXML;
-				   doTrnsfrmGcko(div_id, xmlRspn, xslRspn, pg, i);
-			   }
-		   };
-			 }
-		 };
-	 }
+ var sessionXMLstring = sessionStorage.getItem(div_id);
+	if (sessionXMLstring) {
+	 parser = new DOMParser();
+	 xmlRspn = parser.parseFromString(sessionXMLstring,"text/xml");
+		xslhttp = new XMLHttpRequest();
+	 if (xslhttp) {
+	  xslhttp.open("get", xslURL, true);
+	  xslhttp.send();
+	  xslhttp.onreadystatechange = function() {
+	   if (xslhttp.readyState === 4 && xslhttp.status == 200) {
+	    xslRspn = parser.parseFromString(xslhttp.response,"text/xml");
+			  applyTransform(div_id, xmlRspn, xslRspn, pg);
+			  }
+		  };
+			}
+	} else {
+	 xmlhttp = new XMLHttpRequest();
+ 	if (xmlhttp) {
+ 		xmlhttp.open("get", xmlURL, true);
+ 		xmlhttp.send();
+ 		xmlhttp.onreadystatechange = function() {
+ 			if (xmlhttp.readyState === 4 && xmlhttp.status == 200) {
+ 				xmlRspn = xmlhttp.response;
+ 				xslhttp = new XMLHttpRequest();
+ 	   if (xslhttp) {
+ 		   xslhttp.open("get", xslURL, true);
+ 		   xslhttp.send();
+ 		   xslhttp.onreadystatechange = function() {
+ 			   if (xslhttp.readyState === 4 && xslhttp.status == 200) {
+ 				   xslRspn = xslhttp.response;
+ 				   doTrnsfrmGcko(div_id, xmlRspn, xslRspn, pg, i);
+ 			   }
+ 		   };
+ 			 }
+ 		 };
+ 	 } 
+ 	}
 	}
 }
 
@@ -193,13 +230,15 @@ function toggleByTagName (index_name) {
 function applyTransform(div_id, xmlDoc, xslDoc, pg) {
 	if (xmlDoc == null || xslDoc == null) return;
 	else {
-	 var xsltProcessor = new XSLTProcessor();
-		 xsltProcessor.importStylesheet(xslDoc);
+	  var xsltProcessor = new XSLTProcessor(), 
+	  parser = new DOMParser(), 
+	  fragment = new DocumentFragment();
+	  xslDocParsed = parser.parseFromString(xslDoc,"text/xml");
+	  xsltProcessor.importStylesheet(xslDocParsed);
 		 xsltProcessor.setParameter(null,"crrntPag",pg);
-		 var fragment = new DocumentFragment()
-		 fragment = xsltProcessor.transformToFragment(xmlDoc, document);
+		 xmlDocParsed = parser.parseFromString(xmlDoc,"text/xml");
+		 fragment = xsltProcessor.transformToFragment(xmlDocParsed, document);
 		 if (fragment == null) {return;} else {
-		 console.log(div_id, xmlDoc, xslDoc, pg);//(fragment.innerHTML);
 		 document.getElementById(div_id).innerHTML = "";
 		 document.getElementById(div_id).appendChild(fragment); MathJax.typeset(); }
 	}
